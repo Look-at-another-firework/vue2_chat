@@ -1,24 +1,6 @@
 # vue2_chat
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+耗时两天的时间将自己所参考的页面实现完毕，以及一些组件的逻辑，目前支持账号密码的登录修改（限于本地非服务器），头像的上传方面还未完善，基本的组件样式以及搭建好了，后续有时间还会继续编写
+## 技术栈
+技术斟酌了一下选用了vue2版本，使用了element来对一些样式进行添花，css样式处理使用了less，在帮助一栏我用了Markdown笔记来进行书写的，后续有时间就继续开发本项目，以及关于项目的服务端，也希望更多的人参与进来
+## 使用方法
+下载好包`npm i `之后运行：`npm run serve`打开浏览器在默认8080端口可以预览，默认的密码账号已经写好直接登录即可
