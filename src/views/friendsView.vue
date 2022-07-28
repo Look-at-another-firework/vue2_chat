@@ -7,12 +7,13 @@
           username="聊天机器人"
           longText="你好朋友，欢迎来到聊天室，畅快聊天吧我的宝！！！"
           :ava="ava"
+          @click.native="toTalk"
         />
       </el-card>
     </div>
     <div class="right">
       <el-card>
-        <conversationView />
+        <conversationView ref="conversation" />
       </el-card>
     </div>
   </div>
@@ -34,6 +35,12 @@ export default {
   computed: {
     time() {
       return new Date().toLocaleTimeString()
+    }
+  },
+  methods: {
+    toTalk() {
+      this.$refs.conversation.isShow = false
+      this.$refs.conversation.ava = this.ava
     }
   }
 }

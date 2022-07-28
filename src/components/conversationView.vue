@@ -6,18 +6,15 @@
     </div>
     <div class="show" v-else>
       <div class="top" ref="top">
-        <joinView friends="zs" />
-        <myTalk />
-        <friendTalk />
-        <joinView friends="zs" />
-        <friendTalk />
-        <myTalk />
-        <friendTalk />
-        <myTalk />
+        <!-- <joinView friends="zs" /> -->
+        <friendTalk :ava="ava" />
+        <template v-if="isShowMyTalk">
+          <myTalk v-for="(i, index) in indexData" :key="index" :contextData="i" />
+        </template>
       </div>
       <div class="bottom">
         <div class="text">
-          <el-input type="textarea" v-model="content" placeholder="请输入内容"></el-input>
+          <el-input type="textarea" v-model="ChangeContent" placeholder="请输入内容"></el-input>
         </div>
         <div class="edit">
           <div class="icon">
@@ -26,7 +23,7 @@
             <i class="el-icon-picture-outline"></i>
           </div>
           <div class="smit">
-            <el-button type="primary">按下Enter发送</el-button>
+            <el-button type="primary" @click="smit">点击发送</el-button>
           </div>
         </div>
       </div>
@@ -40,17 +37,37 @@ export default {
     return {
       nomeImage: require('../assets/images/nonoe.jpg'),
       isShow: true,
-      content: '你好'
+      ChangeContent: '',
+      ava: '',
+      isShowMyTalk: false,
+      indexData: []
     }
   },
   methods: {
-    viewBottom(el) {
+    viewBottom(el = this.$refs.top) {
       el.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
+    },
+    smit() {
+      if (!this.ChangeContent) {
+        this.$notify.info({
+          title: '注意',
+          message: '发送的内容不能为空'
+        })
+        return false
+      }
+      this.isShowMyTalk = true
+      this.indexData.push(this.ChangeContent)
+      this.ChangeContent = ''
     }
   },
   mounted() {
     if (!this.$refs.top) return
     this.viewBottom(this.$refs.top)
+  },
+  watch: {
+    indexData() {
+      this.viewBottom()
+    }
   }
 }
 </script>

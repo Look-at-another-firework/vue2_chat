@@ -176,10 +176,9 @@ export default {
         desc: ''
       }
     },
-    fileChange(file, fileList) {
+    fileChange(file) {
       this.$refs.uploads.clearFiles() //form表单的清空操作
       this.fileList.push(file)
-      console.log(fileList)
     }
   }
 }

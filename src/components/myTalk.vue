@@ -1,16 +1,25 @@
 <template>
   <div class="myTalk">
     <div class="ava">
-      <img src="../assets/images/头像.jpg" alt="" />
+      <img :src="ava" alt="" />
     </div>
     <div class="text">
-      <p>学姐也太棒了吧！！</p>
+      <p>{{ contextData }}</p>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  props: ['contextData'],
+  computed: {
+    ava() {
+      return localStorage.getItem('userInfo')
+        ? JSON.parse(localStorage.getItem('userInfo')).ava
+        : '../assets/images/头像.jpg'
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>
@@ -39,29 +48,14 @@ export default {}
     box-shadow: 0px 0px 13px 3px #b3c5f6;
     border-radius: 18px;
     line-height: 25px;
-    // transform-style: preserve-3d;
+    min-height: 45px;
+    // 超过部分换行
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: hidden;
     p {
       margin: 0;
     }
-    // &:before,
-    // &:after {
-    //   position: absolute;
-    //   content: '';
-    //   border: 10px solid;
-    //   filter: drop-shadow(9px 0px 5px #b3c5f6);
-    //   transform: translateZ(-1px);
-    // }
-    // &:before {
-    //   right: -19px;
-    //   top: 12px;
-    //   border-color: transparent transparent transparent #fff;
-    // }
-
-    // &:after {
-    //   border-color: transparent transparent transparent #fff;
-    //   right: -20px;
-    //   top: 12px;
-    // }
   }
 }
 </style>

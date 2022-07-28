@@ -1,16 +1,19 @@
 <template>
   <div class="friendTalk">
     <div class="ava">
-      <img src="../assets/images/头像.jpg" alt="" />
+      <img src="../assets/images/头像.jpg" alt="" v-if="!ava" />
+      <img :src="ava" alt="" v-else />
     </div>
     <div class="text">
-      <p>kiss kiss !!!</p>
+      <p>你好啊我的朋友！！！</p>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  props: ['ava']
+}
 </script>
 
 <style lang="less" scoped>
@@ -31,7 +34,7 @@ export default {}
   }
   .text {
     width: 180px;
-    margin-left:30px;
+    margin-left: 30px;
     box-sizing: border-box;
     padding: 10px 15px;
     position: relative;
