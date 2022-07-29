@@ -6,8 +6,8 @@
       </div>
       <div class="ipt">
         <div class="usn">
-          <p>账号：</p>
-          <el-input placeholder="请输入账号" v-model="userInfo.username" clearable> </el-input>
+          <p>名称：</p>
+          <el-input placeholder="请输入名称" v-model="userInfo.username" clearable> </el-input>
         </div>
         <div class="psd">
           <p>密码：</p>
@@ -41,7 +41,7 @@ export default {
       this.userInfo.username = ''
       this.userInfo.password = ''
     },
-    toHome() {
+    async toHome() {
       if (!this.userInfo.username.trim()) {
         this.$notify.info({
           title: '提示',
@@ -56,36 +56,24 @@ export default {
         })
         return false
       }
-      if (this.userInfo.username !== this.usn) {
-        this.$notify.error({
-          title: '错误',
-          message: '账号错误'
-        })
-        return false
-      } else if (this.userInfo.password !== this.psd) {
-        this.$notify.error({
-          title: '错误',
-          message: '密码错误'
-        })
-        return false
+      const res = await this.$API.home.reqLogin({
+        name: this.userInfo.username,
+        password: this.userInfo.password
+      })
+      if (res.status == 200) {
+        localStorage.setItem('token', res.token)
       }
+      console.log(res)
+
       this.$router.push('/home')
+      const otherData = {
+        ava: this.userInfo.ava,
+        introduce: this.userInfo.introduce
+      }
       if (!localStorage.getItem('userInfo')) {
-        localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
+        localStorage.setItem('userInfo', JSON.stringify(otherData))
         return
       }
-    }
-  },
-  computed: {
-    psd() {
-      return JSON.parse(localStorage.getItem('userInfo'))
-        ? JSON.parse(localStorage.getItem('userInfo')).password
-        : '123456'
-    },
-    usn() {
-      return JSON.parse(localStorage.getItem('userInfo'))
-        ? JSON.parse(localStorage.getItem('userInfo')).username
-        : 'admin'
     }
   }
 }

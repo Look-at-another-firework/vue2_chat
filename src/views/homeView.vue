@@ -4,7 +4,7 @@
       <el-aside width="200px">
         <div class="content">
           <img :src="userInfo.ava" alt="" />
-          <p>{{ userInfo.username }}</p>
+          <p>{{ name }}</p>
         </div>
         <div class="menu1">
           <el-menu
@@ -73,17 +73,26 @@ export default {
     return {
       data: '',
       toNext: false,
-      userInfo: {}
+      userInfo: {},
+      name: ''
     }
   },
   methods: {
     toLogin() {
       this.toNext = false
       this.$router.push('/login')
+    },
+    async getUserInfo() {
+      const res = await this.$API.home.reqUserData()
+      if (res.status == 200) {
+        this.name = res.data.name
+      }
+      console.log(res)
     }
   },
   mounted() {
     this.userInfo = JSON.parse(localStorage.getItem('userInfo'))
+    this.getUserInfo()
   }
 }
 </script>
