@@ -81,6 +81,8 @@ export default {
     toLogin() {
       this.toNext = false
       this.$router.push('/login')
+      localStorage.removeItem('token')
+      localStorage.removeItem('userInfo')
     },
     async getUserInfo() {
       const res = await this.$API.home.reqUserData()

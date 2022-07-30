@@ -7,7 +7,7 @@
     <div class="show" v-else>
       <div class="top" ref="top">
         <!-- <joinView friends="zs" /> -->
-        <friendTalk :ava="ava" />
+        <friendTalk :ava="ava" :name="name" />
         <template v-if="isShowMyTalk">
           <myTalk v-for="(i, index) in indexData" :key="index" :contextData="i" />
         </template>
@@ -40,7 +40,8 @@ export default {
       ChangeContent: '',
       ava: '',
       isShowMyTalk: false,
-      indexData: []
+      indexData: [],
+      name: ''
     }
   },
   methods: {

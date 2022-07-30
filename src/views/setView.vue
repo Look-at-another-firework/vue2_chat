@@ -138,19 +138,32 @@ export default {
       }
       image.src = file.url
     },
-    changeInfo() {
+    async changeInfo() {
+      // 获取密码
+      const res = await this.$API.home.reqUserData()
+      let psd = ''
+      if (res.status == 200) {
+        psd = res.data.password
+      }
+      console.log(res)
       if (
-        this.MyData.password.trim() == JSON.parse(localStorage.getItem('userInfo')).password &&
+        this.MyData.password.trim() == psd &&
         this.MyData.password.trim() !== this.MyData.passwords.trim()
       ) {
-        this.$refs.ruleForm.validate((valid) => {
+        this.$refs.ruleForm.validate(async (valid) => {
           if (valid) {
             let userInfo = JSON.parse(localStorage.getItem('userInfo'))
-            userInfo.username = this.MyData.name
-            userInfo.password = this.MyData.passwords
             userInfo.introduce = this.MyData.desc
             userInfo.ava = this.fileList[0] ? this.fileList[0].url : userInfo.ava
             localStorage.setItem('userInfo', JSON.stringify(userInfo))
+            const res = await this.$API.home.reqLogin({
+              name: this.MyData.name,
+              password: this.MyData.passwords
+            })
+            if (res.status == 200) {
+              localStorage.setItem('token', res.token)
+            }
+            this.$router.go(-1)
           } else {
             console.log('error')
             return false

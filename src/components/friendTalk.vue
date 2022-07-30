@@ -1,6 +1,7 @@
 <template>
   <div class="friendTalk">
     <div class="ava">
+      <p class="name">{{ name }}</p>
       <img src="../assets/images/头像.jpg" alt="" v-if="!ava" />
       <img :src="ava" alt="" v-else />
     </div>
@@ -12,7 +13,7 @@
 
 <script>
 export default {
-  props: ['ava']
+  props: ['ava', 'name']
 }
 </script>
 
@@ -27,6 +28,15 @@ export default {
     width: 60px;
     height: 60px;
     margin-left: 20px;
+    text-align: center;
+    margin-top: 9px;
+    p {
+      margin: 0;
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     img {
       width: 100%;
       border-radius: 50%;

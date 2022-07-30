@@ -54,4 +54,14 @@ const router = new VueRouter({
   routes
 })
 
+// 全局守卫
+router.beforeEach(function(to, from, next) {
+  if (!localStorage.getItem("token")) {
+      if (to.path !== '/login') {
+          return next('/login')
+      }
+  }
+  next()
+})
+
 export default router

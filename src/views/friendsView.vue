@@ -41,6 +41,7 @@ export default {
     toTalk() {
       this.$refs.conversation.isShow = false
       this.$refs.conversation.ava = this.ava
+      this.$refs.conversation.name = '聊天机器人'
     }
   }
 }
