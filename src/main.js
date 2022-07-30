@@ -60,7 +60,7 @@ Vue.use(
   new VueSocketIO({
     debug: false,
     connection: SocketIO('http://127.0.0.1:3030', {
-      autoConnect: false // 自动连接     这里为我项目需求  需要在指定情况下才连接socket
+      autoConnect: true // 自动连接     这里为我项目需求  需要在指定情况下才连接socket
     }), //使用Socket.IO-client
     extraHeaders: { 'Access-Control-Allow-Origin': '*' }
   })
@@ -74,21 +74,23 @@ Vue.prototype.$API = API
 
 new Vue({
   // 这里为全局监听socket事件消息，监听函数这里只写了一点，其实很有很多事件。
-  // sockets: {
-  //   connecting() {
-  //     console.log('正在连接')
-  //   },
-  //   disconnect() {
-  //     console.log('Socket 断开')
-  //   },
-  //   connect_failed() {
-  //     console.log('连接失败')
-  //   },
-  //   connect() {
-  //     console.log('socket connected')
-  //   }
-  // },
-
+  sockets: {
+    connecting() {
+      console.log('正在连接')
+    },
+    disconnect() {
+      console.log('Socket 断开')
+    },
+    connect_failed() {
+      console.log('连接失败')
+    },
+    connect() {
+      console.log('socket connected')
+    }
+  },
+  beforeCreate() {
+    Vue.prototype.$bus = this
+  },
   router,
   render: (h) => h(App)
 }).$mount('#app')

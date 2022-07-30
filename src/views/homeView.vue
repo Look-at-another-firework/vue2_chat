@@ -3,7 +3,7 @@
     <el-container>
       <el-aside width="200px">
         <div class="content">
-          <img :src="userInfo.ava" alt="" />
+          <img :src="avaUrl" alt="" />
           <p>{{ name }}</p>
         </div>
         <div class="menu1">
@@ -74,26 +74,31 @@ export default {
       data: '',
       toNext: false,
       userInfo: {},
-      name: ''
+      name: '',
+      inlineBody: [],
+      avaUrl: require('@/assets/images/1.jpeg')
     }
   },
   methods: {
+    // 退出登录
     toLogin() {
       this.toNext = false
       this.$router.push('/login')
       localStorage.removeItem('token')
       localStorage.removeItem('userInfo')
     },
+    // 获取名字
     async getUserInfo() {
       const res = await this.$API.home.reqUserData()
       if (res.status == 200) {
         this.name = res.data.name
       }
-      console.log(res)
     }
   },
   mounted() {
+    // 设置随机图片
     this.userInfo = JSON.parse(localStorage.getItem('userInfo'))
+    this.avaUrl = require('@/assets/images/' + this.userInfo.ava + '.jpeg')
     this.getUserInfo()
   }
 }

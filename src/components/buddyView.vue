@@ -1,22 +1,12 @@
 <template>
   <div class="buddy">
-    <img src="../assets/images/头像.jpg" alt="" v-if="!ava" />
-    <img :src="ava" alt="" v-else />
-    <div class="text">
-      <p>{{ username }}</p>
-      <p>{{ time }}</p>
-      <div class="textLone">
-        <p>
-          {{ longText }}
-        </p>
-      </div>
-    </div>
+    <slot> </slot>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['username', 'time', 'longText', 'ava']
+  
 }
 </script>
 

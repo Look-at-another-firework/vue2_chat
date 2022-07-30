@@ -3,6 +3,35 @@ import VueRouter from 'vue-router'
 import loginView from '../views/loginView.vue'
 import friendsView from '../views/friendsView.vue'
 
+let originPush = VueRouter.prototype.push
+let originReplace = VueRouter.prototype.replace
+
+VueRouter.prototype.push = function (location, res, rej) {
+  if (res && rej) {
+    originPush.call(this, location, res, rej)
+  } else {
+    originPush.call(
+      this,
+      location,
+      () => {},
+      () => {}
+    )
+  }
+}
+
+VueRouter.prototype.replace = function (location, res, rej) {
+  if (res && rej) {
+    originReplace.call(this, location, res, rej)
+  } else {
+    originReplace.call(
+      this,
+      location,
+      () => {},
+      () => {}
+    )
+  }
+}
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -25,7 +54,7 @@ const routes = [
     component: () => import('../views/homeView.vue'),
     children: [
       {
-        path: 'friends',
+        path: 'friends/:id?',
         name: 'Friends',
         component: friendsView
       },
@@ -55,11 +84,11 @@ const router = new VueRouter({
 })
 
 // 全局守卫
-router.beforeEach(function(to, from, next) {
-  if (!localStorage.getItem("token")) {
-      if (to.path !== '/login') {
-          return next('/login')
-      }
+router.beforeEach(function (to, from, next) {
+  if (!localStorage.getItem('token')) {
+    if (to.path !== '/login') {
+      return next('/login')
+    }
   }
   next()
 })

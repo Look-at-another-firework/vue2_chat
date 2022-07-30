@@ -1,10 +1,11 @@
 <template>
-  <div class="join">{{ friends }}加入了聊天室</div>
+  <div class="join" v-if="friends">{{ friends }}</div>
+  <div class="join" v-else>{{ live }}！</div>
 </template>
 
 <script>
 export default {
-  props: ['friends']
+  props: ['friends', 'live']
 }
 </script>
 

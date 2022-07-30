@@ -1,7 +1,7 @@
 <template>
   <div class="myTalk">
     <div class="ava">
-      <img :src="ava" alt="" />
+      <img :src="avaUrl" alt="" />
     </div>
     <div class="text">
       <p>{{ contextData }}</p>
@@ -12,12 +12,15 @@
 <script>
 export default {
   props: ['contextData'],
-  computed: {
-    ava() {
-      return localStorage.getItem('userInfo')
-        ? JSON.parse(localStorage.getItem('userInfo')).ava
-        : '../assets/images/头像.jpg'
+  data() {
+    return {
+      avaUrl: require('@/assets/images/1.jpeg')
     }
+  },
+  mounted() {
+    // 设置随机图片
+    let ava = JSON.parse(localStorage.getItem('userInfo')).ava || 1
+    this.avaUrl = require('@/assets/images/' + ava + '.jpeg')
   }
 }
 </script>

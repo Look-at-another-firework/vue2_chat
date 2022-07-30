@@ -24,12 +24,12 @@
 </template>
 
 <script>
+import { Message } from 'element-ui'
 export default {
   name: 'HomeView',
   data() {
     return {
       userInfo: {
-        ava: require('@/assets/images/萨摩耶.jpg'),
         username: 'admin',
         introduce: '快来添加一点什么吧！！！',
         password: '123456'
@@ -63,16 +63,41 @@ export default {
       if (res.status == 200) {
         localStorage.setItem('token', res.token)
       }
-      console.log(res)
-
-      this.$router.push('/home')
-      const otherData = {
-        ava: this.userInfo.ava,
+      console.log(this.userInfo.username)
+      this.$socket.emit('login', {
+        name: this.userInfo.username,
+        ava: Math.ceil(Math.random() * 6),
         introduce: this.userInfo.introduce
+      })
+    }
+  },
+  sockets: {
+    loginSuccess(data) {
+      if (data.status == 200) {
+        Message({
+          message: data.message,
+          type: 'success',
+          duration: 3 * 1000
+        })
+        this.userInfo.username = data.data.name
+        const otherData = {
+          ava: data.data.ava,
+          introduce: this.userInfo.introduce,
+          name: data.data.name
+        }
+        if (!localStorage.getItem('userInfo'))
+          localStorage.setItem('userInfo', JSON.stringify(otherData))
+        this.$router.push('/home')
       }
-      if (!localStorage.getItem('userInfo')) {
-        localStorage.setItem('userInfo', JSON.stringify(otherData))
-        return
+    },
+    loginErr(data) {
+      if (data.status == 300) {
+        Message({
+          message: data.message,
+          type: 'error',
+          duration: 3 * 1000
+        })
+        return false
       }
     }
   }
@@ -122,10 +147,11 @@ export default {
       justify-content: space-around;
       .usn,
       .psd {
-        display: -webkit-inline-box;
+        display: flex;
         width: 90%;
         p {
           margin: 10px 0 0 0;
+          width: 60px;
         }
       }
       .smit {

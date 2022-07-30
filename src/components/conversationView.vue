@@ -1,16 +1,29 @@
 <template>
   <div class="con">
-    <div class="default" v-if="isShow">
+    <div class="default" v-show="isShow">
       <el-empty :image="nomeImage" description="开始聊天吧我的宝！！！" :image-size="500">
       </el-empty>
     </div>
-    <div class="show" v-else>
-      <div class="top" ref="top">
-        <!-- <joinView friends="zs" /> -->
-        <friendTalk :ava="ava" :name="name" />
+    <div class="show" v-show="!isShow">
+      <div class="top" ref="top" id="#top">
+        <!-- <joinView :friends="myName" /> -->
+        <div class="top-join" ref="topJoin"></div>
+        <!-- <friendTalk>
+          <template v-if="ava">
+            <div class="ava">
+              <p class="name">{{ name }}</p>
+              <img src="../assets/images/头像.jpg" alt="" v-if="!ava" />
+              <img :src="ava" alt="" v-else />
+            </div>
+            <div class="text">
+              <p>你好啊我的朋友！！！</p>
+            </div>
+          </template>
+        </friendTalk> -->
         <template v-if="isShowMyTalk">
           <myTalk v-for="(i, index) in indexData" :key="index" :contextData="i" />
         </template>
+        <div class="top-leave" ref="leave"></div>
       </div>
       <div class="bottom">
         <div class="text">
@@ -32,16 +45,19 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import joinView from '@/components/joinView.vue'
 export default {
+  props: ['liveName'],
   data() {
     return {
       nomeImage: require('../assets/images/nonoe.jpg'),
       isShow: true,
       ChangeContent: '',
-      ava: '',
       isShowMyTalk: false,
       indexData: [],
-      name: ''
+      myName: '',
+      live: ''
     }
   },
   methods: {
@@ -62,12 +78,39 @@ export default {
     }
   },
   mounted() {
-    if (!this.$refs.top) return
     this.viewBottom(this.$refs.top)
+    this.$socket.emit('myName')
   },
   watch: {
     indexData() {
       this.viewBottom()
+    },
+    myName(newName) {
+      this.$nextTick(() => {
+        var Profile = Vue.extend(joinView)
+        // 创建 Profile 实例，并挂载到一个元素上。
+        if (!this.$refs.top) return
+        var mapComponent = new Profile({
+          propsData: { friends: newName + '在线中！！！' }
+        }).$mount()
+        this.$refs.topJoin.append(mapComponent.$el)
+      })
+    },
+    liveName(newName) {
+      console.log(newName)
+      this.$nextTick(() => {
+        var Profile = Vue.extend(joinView)
+        // 创建 Profile 实例，并挂载到一个元素上。
+        if (!this.$refs.leave) return
+        var mapComponent = new Profile({ propsData: { live: newName + '已离线！！！' } }).$mount()
+        this.$refs.leave.append(mapComponent.$el)
+      })
+    }
+  },
+  sockets: {
+    myNameReturn(name) {
+      this.myName = name
+      console.log(this.myName + '---')
     }
   }
 }
