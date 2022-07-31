@@ -101,8 +101,7 @@ export default {
     // 离开的名称
     live(data) {
       this.liveName = data.name
-      console.log(this.liveName)
-      console.log('+-+-')
+      console.log(this.liveName + '离开的名称')
     },
     // 离开人之后的数组
     afterBody(data) {

@@ -63,12 +63,16 @@ export default {
       if (res.status == 200) {
         localStorage.setItem('token', res.token)
       }
-      console.log(this.userInfo.username)
+      console.log(this.userInfo.username + '登陆了')
+      this.$socket.open()
       this.$socket.emit('login', {
         name: this.userInfo.username,
         ava: Math.ceil(Math.random() * 6),
         introduce: this.userInfo.introduce
       })
+      // 添加判断重连代码
+      // localStorage.setItem('uUID', Math.random().toString(24) + new Date())
+      // this.$socket.emit('userLogin', localStorage.getItem('uUID'))
     }
   },
   sockets: {

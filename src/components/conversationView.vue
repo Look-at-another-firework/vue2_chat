@@ -6,7 +6,6 @@
     </div>
     <div class="show" v-show="!isShow">
       <div class="top" ref="top" id="#top">
-        <!-- <joinView :friends="myName" /> -->
         <div class="top-join" ref="topJoin"></div>
         <!-- <friendTalk>
           <template v-if="ava">
@@ -23,7 +22,6 @@
         <template v-if="isShowMyTalk">
           <myTalk v-for="(i, index) in indexData" :key="index" :contextData="i" />
         </template>
-        <div class="top-leave" ref="leave"></div>
       </div>
       <div class="bottom">
         <div class="text">
@@ -100,10 +98,9 @@ export default {
       console.log(newName)
       this.$nextTick(() => {
         var Profile = Vue.extend(joinView)
-        // 创建 Profile 实例，并挂载到一个元素上。
-        if (!this.$refs.leave) return
+        if (!this.$refs.top) return
         var mapComponent = new Profile({ propsData: { live: newName + '已离线！！！' } }).$mount()
-        this.$refs.leave.append(mapComponent.$el)
+        this.$refs.top.append(mapComponent.$el)
       })
     }
   },

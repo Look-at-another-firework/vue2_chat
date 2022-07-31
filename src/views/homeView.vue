@@ -86,6 +86,8 @@ export default {
       this.$router.push('/login')
       localStorage.removeItem('token')
       localStorage.removeItem('userInfo')
+      // 关闭连接
+      this.$socket.close()
     },
     // 获取名字
     async getUserInfo() {

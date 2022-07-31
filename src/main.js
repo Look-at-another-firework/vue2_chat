@@ -73,7 +73,6 @@ Vue.component('friendTalk', friendTalk)
 Vue.prototype.$API = API
 
 new Vue({
-  // 这里为全局监听socket事件消息，监听函数这里只写了一点，其实很有很多事件。
   sockets: {
     connecting() {
       console.log('正在连接')
