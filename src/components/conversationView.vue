@@ -5,23 +5,8 @@
       </el-empty>
     </div>
     <div class="show" v-show="!isShow">
-      <div class="top" ref="top" id="#top">
-        <div class="top-join" ref="topJoin"></div>
-        <!-- <friendTalk>
-          <template v-if="ava">
-            <div class="ava">
-              <p class="name">{{ name }}</p>
-              <img src="../assets/images/头像.jpg" alt="" v-if="!ava" />
-              <img :src="ava" alt="" v-else />
-            </div>
-            <div class="text">
-              <p>你好啊我的朋友！！！</p>
-            </div>
-          </template>
-        </friendTalk> -->
-        <template v-if="isShowMyTalk">
-          <myTalk v-for="(i, index) in indexData" :key="index" :contextData="i" />
-        </template>
+      <div class="top" ref="top">
+        <!-- 这里添加对话 -->
       </div>
       <div class="bottom">
         <div class="text">
@@ -45,6 +30,8 @@
 <script>
 import Vue from 'vue'
 import joinView from '@/components/joinView.vue'
+import myTalk from '@/components/myTalk.vue'
+import friendTalk from '@/components/friendTalk.vue'
 export default {
   props: ['liveName'],
   data() {
@@ -52,14 +39,13 @@ export default {
       nomeImage: require('../assets/images/nonoe.jpg'),
       isShow: true,
       ChangeContent: '',
-      isShowMyTalk: false,
-      indexData: [],
       myName: '',
       live: ''
     }
   },
   methods: {
     viewBottom(el = this.$refs.top) {
+      if (!el.lastElementChild) return
       el.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
     },
     smit() {
@@ -70,8 +56,14 @@ export default {
         })
         return false
       }
-      this.isShowMyTalk = true
-      this.indexData.push(this.ChangeContent)
+      this.$socket.emit('changeContent', {
+        // 聊天内容
+        msg: this.ChangeContent,
+        // 头像
+        ava: JSON.parse(localStorage.getItem('userInfo')).ava,
+        // // 名字
+        name: JSON.parse(localStorage.getItem('userInfo')).name
+      })
       this.ChangeContent = ''
     }
   },
@@ -80,7 +72,7 @@ export default {
     this.$socket.emit('myName')
   },
   watch: {
-    indexData() {
+    ChangeContent() {
       this.viewBottom()
     },
     myName(newName) {
@@ -91,11 +83,10 @@ export default {
         var mapComponent = new Profile({
           propsData: { friends: newName + '在线中！！！' }
         }).$mount()
-        this.$refs.topJoin.append(mapComponent.$el)
+        this.$refs.top.append(mapComponent.$el)
       })
     },
     liveName(newName) {
-      console.log(newName)
       this.$nextTick(() => {
         var Profile = Vue.extend(joinView)
         if (!this.$refs.top) return
@@ -105,9 +96,32 @@ export default {
     }
   },
   sockets: {
+    // 加入成员
     myNameReturn(name) {
       this.myName = name
-      console.log(this.myName + '---')
+    },
+    changeContentReturn(content) {
+      if (content.name == JSON.parse(localStorage.getItem('userInfo')).name) {
+        this.$nextTick(() => {
+          var Profile = Vue.extend(myTalk)
+          // 创建 Profile 实例，并挂载到一个元素上。
+          if (!this.$refs.top) return
+          var mapComponent = new Profile({
+            propsData: { contextData: content.msg }
+          }).$mount()
+          this.$refs.top.append(mapComponent.$el)
+        })
+      } else {
+        this.$nextTick(() => {
+          var Profile = Vue.extend(friendTalk)
+          // 创建 Profile 实例，并挂载到一个元素上。
+          if (!this.$refs.top) return
+          var mapComponent = new Profile({
+            propsData: { contextData: content.msg, ava: content.ava, name: content.name }
+          }).$mount()
+          this.$refs.top.append(mapComponent.$el)
+        })
+      }
     }
   }
 }

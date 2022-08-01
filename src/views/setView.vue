@@ -31,6 +31,7 @@
             :rows="2"
           ></el-input>
         </el-form-item>
+        <!-- 图片上传禁用
         <el-form-item label="上传头像">
           <el-upload
             action="#"
@@ -69,6 +70,7 @@
             <img width="100%" :src="dialogImageUrl" alt="" />
           </el-dialog>
         </el-form-item>
+          -->
         <el-form-item>
           <el-button type="primary" @click="changeInfo">修改</el-button>
           <el-button type="info" @click="info">重置</el-button>
@@ -79,6 +81,7 @@
 </template>
 
 <script>
+import { Message } from 'element-ui'
 export default {
   data() {
     return {
@@ -113,13 +116,16 @@ export default {
     }
   },
   methods: {
+    // 移除图片
     handleRemove() {
       delete this.fileList[0]
     },
+    // 预览图片
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
       this.showImg = true
     },
+    // 下载图片
     handleDownload(file) {
       const image = new Image()
       image.setAttribute('crossOrigin', 'anonymous')
@@ -145,7 +151,6 @@ export default {
       if (res.status == 200) {
         psd = res.data.password
       }
-      console.log(res)
       if (
         this.MyData.password.trim() == psd &&
         this.MyData.password.trim() !== this.MyData.passwords.trim()
@@ -153,17 +158,15 @@ export default {
         this.$refs.ruleForm.validate(async (valid) => {
           if (valid) {
             let userInfo = JSON.parse(localStorage.getItem('userInfo'))
-            userInfo.introduce = this.MyData.desc
-            userInfo.ava = this.fileList[0] ? this.fileList[0].url : userInfo.ava
-            localStorage.setItem('userInfo', JSON.stringify(userInfo))
-            const res = await this.$API.home.reqLogin({
-              name: this.MyData.name,
-              password: this.MyData.passwords
+            // 修改io
+            this.$socket.emit('setInfo', {
+              // 以前的名字
+              name: userInfo.name,
+              // 新的名字
+              newName: this.MyData.name,
+              // 介绍
+              introduce: this.MyData.desc
             })
-            if (res.status == 200) {
-              localStorage.setItem('token', res.token)
-            }
-            this.$router.go(-1)
           } else {
             console.log('error')
             return false
@@ -192,6 +195,25 @@ export default {
     fileChange(file) {
       this.$refs.uploads.clearFiles() //form表单的清空操作
       this.fileList.push(file)
+    }
+  },
+  sockets: {
+    async setInfoReturn(data) {
+      // userInfo.ava = this.fileList[0] ? this.fileList[0].url : userInfo.ava
+      localStorage.setItem('userInfo', JSON.stringify(data))
+      const res = await this.$API.home.reqLogin({
+        name: this.MyData.name,
+        password: this.MyData.passwords
+      })
+      if (res.status == 200) {
+        localStorage.setItem('token', res.token)
+      }
+      Message({
+        message: '修改成功',
+        type: 'success',
+        duration: 3 * 1000
+      })
+      this.$router.push('/home')
     }
   }
 }

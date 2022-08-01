@@ -1,12 +1,28 @@
 <template>
   <div class="friendTalk">
-    <slot></slot>
+    <div class="ava">
+      <p class="name">{{ name }}</p>
+      <img src="../assets/images/头像.jpg" alt="" v-if="!ava" />
+      <img :src="avaUrl" alt="" v-else />
+    </div>
+    <div class="text">
+      <p>{{ contextData }}</p>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
- 
+  props: ['name', 'ava', 'contextData'],
+  data() {
+    return {
+      avaUrl: require('@/assets/images/1.jpeg')
+    }
+  },
+  mounted() {
+    // 设置随机图片
+    this.avaUrl = require('@/assets/images/' + this.ava + '.jpeg')
+  },
 }
 </script>
 

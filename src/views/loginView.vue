@@ -70,9 +70,6 @@ export default {
         ava: Math.ceil(Math.random() * 6),
         introduce: this.userInfo.introduce
       })
-      // 添加判断重连代码
-      // localStorage.setItem('uUID', Math.random().toString(24) + new Date())
-      // this.$socket.emit('userLogin', localStorage.getItem('uUID'))
     }
   },
   sockets: {

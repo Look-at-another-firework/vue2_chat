@@ -80,7 +80,6 @@ export default {
       // this.$refs.conversation.isShow = false  取消机器人的聊天
       this.$refs.conversation.ava = this.ava
       this.$refs.conversation.name = '聊天机器人'
-      // this.$router.push('/home/friends/robot')  取消参数传递
     },
     toWorld() {
       this.$refs.conversation.isShow = false
@@ -88,7 +87,6 @@ export default {
   },
   mounted() {
     this.$socket.emit('allBody')
-    // this.$socket.emit('myName', this.myName)
     this.myName = JSON.parse(localStorage.getItem('userInfo')).name
   },
   sockets: {
@@ -101,11 +99,16 @@ export default {
     // 离开的名称
     live(data) {
       this.liveName = data.name
-      console.log(this.liveName + '离开的名称')
+      console.log('离开的名称' + this.liveName)
     },
     // 离开人之后的数组
     afterBody(data) {
       this.inlineBody = data
+    }
+  },
+  watch: {
+    inlineBody(newArr) {
+      this.inlineBody = newArr
     }
   }
 }

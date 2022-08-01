@@ -83,6 +83,7 @@ export default {
     // 退出登录
     toLogin() {
       this.toNext = false
+      this.$socket.emit('afterBody')
       this.$router.push('/login')
       localStorage.removeItem('token')
       localStorage.removeItem('userInfo')
