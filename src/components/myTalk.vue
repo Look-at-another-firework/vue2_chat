@@ -18,9 +18,12 @@ export default {
     }
   },
   mounted() {
-    // 设置随机图片
-    let ava = JSON.parse(localStorage.getItem('userInfo')).ava || 1
-    this.avaUrl = require('@/assets/images/' + ava + '.jpeg')
+    this.$socket.emit('getUserAva')
+  },
+  sockets: {
+    getUserAvaReturn(data) {
+      this.avaUrl = require('@/assets/images/' + data.ava + '.jpeg')
+    }
   }
 }
 </script>

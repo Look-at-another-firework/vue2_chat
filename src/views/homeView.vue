@@ -99,10 +99,13 @@ export default {
     }
   },
   mounted() {
-    // 设置随机图片
-    this.userInfo = JSON.parse(localStorage.getItem('userInfo'))
-    this.avaUrl = require('@/assets/images/' + this.userInfo.ava + '.jpeg')
     this.getUserInfo()
+    this.$socket.emit('getUserAva')
+  },
+  sockets: {
+    getUserAvaReturn(data) {
+      this.avaUrl = require('@/assets/images/' + data.ava + '.jpeg')
+    }
   }
 }
 </script>
@@ -125,10 +128,10 @@ export default {
         padding: 0 25px;
         box-sizing: border-box;
         color: #eee;
-        font-size: 14px;
+        font-size: 16px;
         img {
-          width: 40px;
-          height: 40px;
+          width: 50px;
+          height: 50px;
           border-radius: 50%;
         }
       }

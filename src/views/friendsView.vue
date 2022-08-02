@@ -26,7 +26,7 @@
         </BuddyView>
         <BuddyView v-for="(i, index) in inlineBody" :key="index">
           <img src="../assets/images/头像.jpg" alt="" v-if="!ava" />
-          <img :src="avaUrl" alt="" v-else />
+          <img :src="'images/' + i.ava + '.jpeg'" alt="" v-else />
           <div class="text">
             <p>{{ i.name }}</p>
             <p>{{ time }}</p>
@@ -62,7 +62,8 @@ export default {
       myName: '',
       avaUrl: require('@/assets/images/1.jpeg'),
       inlineBody: [],
-      liveName: ''
+      liveName: '',
+      imgIndex: 0
     }
   },
   components: {
@@ -92,14 +93,16 @@ export default {
   sockets: {
     // 在线的所有人
     allBodyReturn(data) {
+      console.log('在线人数组')
+      console.log(data)
+      // 图片序号
+      this.imgIndex = data.ava
       this.inlineBody = data
-      const ava = JSON.parse(localStorage.getItem('userInfo')).ava
-      this.avaUrl = require('@/assets/images/' + ava + '.jpeg')
     },
     // 离开的名称
     live(data) {
       this.liveName = data.name
-      console.log('离开的名称' + this.liveName)
+      console.log('离开的名称：' + this.liveName)
     },
     // 离开人之后的数组
     afterBody(data) {

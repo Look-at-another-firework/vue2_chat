@@ -40,15 +40,21 @@ export default {
       isShow: true,
       ChangeContent: '',
       myName: '',
-      live: ''
+      live: '',
+      // 用于保存返回和信息
+      mine: '',
+      mineAva: 0
     }
   },
   methods: {
     viewBottom(el = this.$refs.top) {
-      if (!el.lastElementChild) return
-      el.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
+      this.$nextTick(() => {
+        if (!el.lastChild) return
+        el.lastChild.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
+      })
     },
     smit() {
+      // 验证是否为空
       if (!this.ChangeContent) {
         this.$notify.info({
           title: '注意',
@@ -56,13 +62,15 @@ export default {
         })
         return false
       }
+      // 获取名字头像
+      this.$socket.emit('getUserAva')
       this.$socket.emit('changeContent', {
         // 聊天内容
         msg: this.ChangeContent,
         // 头像
-        ava: JSON.parse(localStorage.getItem('userInfo')).ava,
-        // // 名字
-        name: JSON.parse(localStorage.getItem('userInfo')).name
+        ava: this.mineAva,
+        // 名字
+        name: this.mine
       })
       this.ChangeContent = ''
     }
@@ -72,9 +80,6 @@ export default {
     this.$socket.emit('myName')
   },
   watch: {
-    ChangeContent() {
-      this.viewBottom()
-    },
     myName(newName) {
       this.$nextTick(() => {
         var Profile = Vue.extend(joinView)
@@ -101,7 +106,7 @@ export default {
       this.myName = name
     },
     changeContentReturn(content) {
-      if (content.name == JSON.parse(localStorage.getItem('userInfo')).name) {
+      if (content.name == this.mine) {
         this.$nextTick(() => {
           var Profile = Vue.extend(myTalk)
           // 创建 Profile 实例，并挂载到一个元素上。
@@ -111,6 +116,7 @@ export default {
           }).$mount()
           this.$refs.top.append(mapComponent.$el)
         })
+        this.viewBottom()
       } else {
         this.$nextTick(() => {
           var Profile = Vue.extend(friendTalk)
@@ -122,6 +128,10 @@ export default {
           this.$refs.top.append(mapComponent.$el)
         })
       }
+    },
+    getUserAvaReturn(data) {
+      this.mine = data.name
+      this.mineAva = data.ava
     }
   }
 }
