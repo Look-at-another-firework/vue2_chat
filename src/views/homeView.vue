@@ -1,12 +1,15 @@
 <template>
   <div class="home">
     <el-container>
+      <!-- 左侧 -->
       <el-aside width="200px">
+        <!-- 头像名称 -->
         <div class="content">
           <img :src="avaUrl" alt="" />
           <p>{{ name }}</p>
         </div>
         <div class="menu1">
+          <!-- 左侧栏一 -->
           <el-menu
             default-active="1"
             background-color="#2dafff"
@@ -24,6 +27,7 @@
           </el-menu>
         </div>
         <div class="menu2">
+          <!-- 左侧栏二 -->
           <el-menu background-color="#2dafff" text-color="#ffffff" active-text-color="#ffffff">
             <el-menu-item index="3">
               <i class="iconfont icon-dingbudaohang-zhangh"></i>
@@ -36,9 +40,12 @@
           </el-menu>
         </div>
       </el-aside>
+      <!-- 右侧内容区 -->
       <el-container>
+        <!-- 头部 -->
         <el-header>
           <div class="search">
+            <!-- 输入框 -->
             <el-input
               v-model="data"
               placeholder="请输入你需要搜索的内容"
@@ -46,11 +53,13 @@
               prefix-icon="el-icon-search"
             ></el-input>
           </div>
+          <!-- 退出按钮 -->
           <div class="next">
             <el-button type="danger" @click="toNext = true"> 退出登录</el-button>
           </div>
         </el-header>
         <el-main>
+          <!-- 展示区 -->
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -71,20 +80,26 @@
 export default {
   data() {
     return {
+      // 搜索的内容
       data: '',
+      // 是否显示提示框
       toNext: false,
-      userInfo: {},
+      // 名称
       name: '',
-      inlineBody: [],
+      // 图片默认地址
       avaUrl: require('@/assets/images/1.jpeg')
     }
   },
   methods: {
     // 退出登录
     toLogin() {
+      // 打开对话框
       this.toNext = false
+      // 获取离开的数组
       this.$socket.emit('afterBody')
+      // 跳转
       this.$router.push('/login')
+      // 清除本地
       localStorage.removeItem('token')
       localStorage.removeItem('userInfo')
       // 关闭连接
@@ -94,16 +109,19 @@ export default {
     async getUserInfo() {
       const res = await this.$API.home.reqUserData()
       if (res.status == 200) {
+        // 发请求获取名称
         this.name = res.data.name
       }
     }
   },
   mounted() {
     this.getUserInfo()
+    // 获取登录图片随机数
     this.$socket.emit('getUserAva')
   },
   sockets: {
     getUserAvaReturn(data) {
+      // 设置随机数
       this.avaUrl = require('@/assets/images/' + data.ava + '.jpeg')
     }
   }

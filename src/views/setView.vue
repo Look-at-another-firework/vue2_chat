@@ -2,9 +2,11 @@
   <div class="set">
     <el-card>
       <el-form :model="MyData" :rules="rules" ref="ruleForm" label-width="100px">
+      <!-- 名称 -->
         <el-form-item label="新用户名" prop="name" style="width: 400px">
           <el-input v-model="MyData.name" clearable placeholder="请输入新用户名"></el-input>
         </el-form-item>
+        <!-- 旧密码 -->
         <el-form-item label="旧密码" prop="password" style="width: 400px">
           <el-input
             v-model="MyData.password"
@@ -13,6 +15,7 @@
             placeholder="请输入旧密码"
           ></el-input>
         </el-form-item>
+        <!-- 新密码 -->
         <el-form-item label="新密码" prop="passwords" style="width: 400px">
           <el-input
             v-model="MyData.passwords"
@@ -21,6 +24,7 @@
             placeholder="请输入新密码"
           ></el-input>
         </el-form-item>
+        <!-- 签名 -->
         <el-form-item label="个性签名" prop="desc">
           <el-input
             type="textarea"
@@ -31,7 +35,7 @@
             :rows="2"
           ></el-input>
         </el-form-item>
-        <!-- 图片上传禁用
+        <!-- 图片上传禁用（后续开发）
         <el-form-item label="上传头像">
           <el-upload
             action="#"
@@ -85,6 +89,7 @@ import { Message } from 'element-ui'
 export default {
   data() {
     return {
+      // 验证规则
       rules: {
         name: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -103,29 +108,34 @@ export default {
           { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ]
       },
+      // 收集信息
       MyData: {
         name: '',
         password: '',
         passwords: '',
         desc: ''
       },
+      // 预览图片地址 目前未开发
       dialogImageUrl: '',
+      // 预览图片开关 目前未开发
       showImg: false,
+      // 图标开关 目前未开发
       disabled: false,
+      // 上传图片地址保存 目前未开发
       fileList: []
     }
   },
   methods: {
-    // 移除图片
+    // 移除图片 目前未开发
     handleRemove() {
       delete this.fileList[0]
     },
-    // 预览图片
+    // 预览图片 目前未开发
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
       this.showImg = true
     },
-    // 下载图片
+    // 下载图片 目前未开发
     handleDownload(file) {
       const image = new Image()
       image.setAttribute('crossOrigin', 'anonymous')
@@ -144,6 +154,7 @@ export default {
       }
       image.src = file.url
     },
+    // 修改信息
     async changeInfo() {
       // 获取密码
       const res = await this.$API.home.reqUserData()
@@ -151,10 +162,12 @@ export default {
       if (res.status == 200) {
         psd = res.data.password
       }
+      // 验证密码
       if (
         this.MyData.password.trim() == psd &&
         this.MyData.password.trim() !== this.MyData.passwords.trim()
       ) {
+        // 其他信息的验证
         this.$refs.ruleForm.validate(async (valid) => {
           if (valid) {
             let userInfo = JSON.parse(localStorage.getItem('userInfo'))
@@ -184,6 +197,7 @@ export default {
         })
       }
     },
+    // 重置操作
     info() {
       this.MyData = {
         name: '',
@@ -198,9 +212,12 @@ export default {
     }
   },
   sockets: {
+    // 接收修改后的个人信息
     async setInfoReturn(data) {
-      // userInfo.ava = this.fileList[0] ? this.fileList[0].url : userInfo.ava
+      // userInfo.ava = this.fileList[0] ? this.fileList[0].url : userInfo.ava  图片修改功能 目前未开发
+      // 重新保存
       localStorage.setItem('userInfo', JSON.stringify(data))
+      // 重新获取token
       const res = await this.$API.home.reqLogin({
         name: this.MyData.name,
         password: this.MyData.passwords
@@ -208,11 +225,13 @@ export default {
       if (res.status == 200) {
         localStorage.setItem('token', res.token)
       }
+      // 提示
       Message({
         message: '修改成功',
         type: 'success',
         duration: 3 * 1000
       })
+      // 回到首页
       this.$router.push('/home')
     }
   }

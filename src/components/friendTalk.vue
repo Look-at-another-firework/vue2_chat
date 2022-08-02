@@ -1,10 +1,12 @@
 <template>
   <div class="friendTalk">
+    <!-- 头像名称 -->
     <div class="ava">
       <p class="name">{{ name }}</p>
       <img src="../assets/images/头像.jpg" alt="" v-if="!ava" />
       <img :src="avaUrl" alt="" v-else />
     </div>
+    <!-- 内容 -->
     <div class="text">
       <p>{{ contextData }}</p>
     </div>
@@ -13,16 +15,18 @@
 
 <script>
 export default {
+  // 需要传入名称，头像随机数，收到的信息
   props: ['name', 'ava', 'contextData'],
   data() {
     return {
+      // 默认头像
       avaUrl: require('@/assets/images/1.jpeg')
     }
   },
   mounted() {
     // 设置随机图片
     this.avaUrl = require('@/assets/images/' + this.ava + '.jpeg')
-  },
+  }
 }
 </script>
 
@@ -38,10 +42,11 @@ export default {
     height: 60px;
     margin-left: 20px;
     text-align: center;
-    margin-top: 9px;
+    margin-top: -10px;
     p {
       margin: 0;
       font-size: 12px;
+      margin-bottom: 8px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;

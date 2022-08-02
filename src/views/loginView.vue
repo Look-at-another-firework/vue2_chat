@@ -1,9 +1,12 @@
 <template>
   <div class="home">
+    <!-- 内容区 -->
     <div class="container">
+      <!-- 头像区 -->
       <div class="avatar">
         <img src="../assets/images/头像.jpg" alt="" />
       </div>
+      <!-- 输入框 -->
       <div class="ipt">
         <div class="usn">
           <p>名称：</p>
@@ -30,25 +33,32 @@ export default {
   data() {
     return {
       userInfo: {
+        // 默认名称
         username: 'admin',
+        // 个性签名
         introduce: '快来添加一点什么吧！！！',
+        // 密码
         password: '123456'
       }
     }
   },
   methods: {
+    // 重置
     info() {
       this.userInfo.username = ''
       this.userInfo.password = ''
     },
+    // 登录
     async toHome() {
+      // 判断名称是否为空
       if (!this.userInfo.username.trim()) {
         this.$notify.info({
           title: '提示',
-          message: '您还没有输入账号'
+          message: '您还没有输入名称'
         })
         return false
       }
+      // 判断密码是否为空
       if (!this.userInfo.password.trim()) {
         this.$notify.info({
           title: '提示',
@@ -56,15 +66,19 @@ export default {
         })
         return false
       }
+      // 发起请求
       const res = await this.$API.home.reqLogin({
         name: this.userInfo.username,
         password: this.userInfo.password
       })
       if (res.status == 200) {
+        // 保存token
         localStorage.setItem('token', res.token)
       }
       console.log(this.userInfo.username + '登陆了')
+      // 连接
       this.$socket.open()
+      // 发送连接信息（名称，随机头像序号，个性签名）
       this.$socket.emit('login', {
         name: this.userInfo.username,
         ava: Math.ceil(Math.random() * 6),
@@ -73,24 +87,30 @@ export default {
     }
   },
   sockets: {
+    // 成功返回登录结果
     loginSuccess(data) {
       if (data.status == 200) {
+        // 提示
         Message({
           message: data.message,
           type: 'success',
           duration: 3 * 1000
         })
+        // 用于保存名称
         this.userInfo.username = data.data.name
         const otherData = {
           ava: data.data.ava,
           introduce: this.userInfo.introduce,
           name: data.data.name
         }
+        // 保存个人信息
         if (!localStorage.getItem('userInfo'))
           localStorage.setItem('userInfo', JSON.stringify(otherData))
+        // 跳转
         this.$router.push('/home')
       }
     },
+    // 返回登录失败的结果
     loginErr(data) {
       if (data.status == 300) {
         Message({

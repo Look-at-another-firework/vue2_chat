@@ -1,7 +1,9 @@
 <template>
   <div class="container">
+    <!-- 左侧 -->
     <div class="left">
       <el-card>
+        <!-- 默认的机器人 -->
         <BuddyView @click.native="toTalk">
           <img src="../assets/images/头像.jpg" alt="" v-if="!ava" />
           <img :src="ava" alt="" v-else />
@@ -13,6 +15,7 @@
             </div>
           </div>
         </BuddyView>
+        <!-- 聊天室 -->
         <BuddyView @click.native="toWorld">
           <img src="../assets/images/头像.jpg" alt="" v-if="!ava" />
           <img :src="Qava" alt="" v-else />
@@ -24,6 +27,7 @@
             </div>
           </div>
         </BuddyView>
+        <!-- 新增的朋友（包括自己） -->
         <BuddyView v-for="(i, index) in inlineBody" :key="index">
           <img src="../assets/images/头像.jpg" alt="" v-if="!ava" />
           <img :src="'images/' + i.ava + '.jpeg'" alt="" v-else />
@@ -38,31 +42,31 @@
       </el-card>
     </div>
     <div class="right">
+      <!-- 右侧 -->
       <el-card>
-        <conversationView
-          ref="conversation"
-          :myName="myName"
-          :liveName="liveName"
-        ></conversationView>
+        <!-- 聊天区 -->
+        <conversationView ref="conversation" :liveName="liveName"></conversationView>
       </el-card>
     </div>
   </div>
 </template>
 
 <script>
-// import { Message } from 'element-ui'
 import buddyView from '@/components/buddyView.vue'
 import conversationView from '@/components/conversationView.vue'
 import BuddyView from '@/components/buddyView.vue'
 export default {
   data() {
     return {
+      // 默认头像
       ava: require('@/assets/images/默认图片.png'),
+      // 群头像
       Qava: require('@/assets/images/qun.jpeg'),
-      myName: '',
-      avaUrl: require('@/assets/images/1.jpeg'),
+      // 在线的所有人数组
       inlineBody: [],
+      // 离开的名称
       liveName: '',
+      // 图片的索引
       imgIndex: 0
     }
   },
@@ -72,31 +76,30 @@ export default {
     conversationView
   },
   computed: {
+    // 时间优化
     time() {
       return new Date().toLocaleTimeString()
     }
   },
   methods: {
+    // 取消机器人的聊天（后续开发）
     toTalk() {
-      // this.$refs.conversation.isShow = false  取消机器人的聊天
-      this.$refs.conversation.ava = this.ava
-      this.$refs.conversation.name = '聊天机器人'
+      // this.$refs.conversation.isShow = false
+      // this.$refs.conversation.ava = this.ava
+      // this.$refs.conversation.name = '聊天机器人'
     },
+    // 打开聊天室
     toWorld() {
       this.$refs.conversation.isShow = false
     }
   },
   mounted() {
+    // 获取在线人数组
     this.$socket.emit('allBody')
-    this.myName = JSON.parse(localStorage.getItem('userInfo')).name
   },
   sockets: {
     // 在线的所有人
     allBodyReturn(data) {
-      console.log('在线人数组')
-      console.log(data)
-      // 图片序号
-      this.imgIndex = data.ava
       this.inlineBody = data
     },
     // 离开的名称

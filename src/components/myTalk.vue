@@ -1,8 +1,10 @@
 <template>
   <div class="myTalk">
+    <!-- 头像 -->
     <div class="ava">
       <img :src="avaUrl" alt="" />
     </div>
+    <!-- 内容 -->
     <div class="text">
       <p>{{ contextData }}</p>
     </div>
@@ -11,16 +13,20 @@
 
 <script>
 export default {
+  // 接收发送的内容
   props: ['contextData'],
   data() {
     return {
+      // 默认头像
       avaUrl: require('@/assets/images/1.jpeg')
     }
   },
   mounted() {
+    // 获取登录时候的头像随机数
     this.$socket.emit('getUserAva')
   },
   sockets: {
+    // 获取之后保存好随机数
     getUserAvaReturn(data) {
       this.avaUrl = require('@/assets/images/' + data.ava + '.jpeg')
     }

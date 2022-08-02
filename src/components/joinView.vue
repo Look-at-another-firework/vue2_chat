@@ -5,6 +5,7 @@
 
 <script>
 export default {
+  // 加入的名称或者离开的名称
   props: ['friends', 'live']
 }
 </script>
