@@ -132,7 +132,7 @@ export default {
     width: 32%;
     height: 750px;
     box-sizing: border-box;
-    overflow-y: auto;
+    margin-top: 80px;
     overflow: hidden;
     .el-card {
       width: 100%;
